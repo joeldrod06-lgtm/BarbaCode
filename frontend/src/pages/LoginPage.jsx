@@ -33,11 +33,11 @@ export function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-app-bg px-4 py-10">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-app-bg px-3 py-6 sm:px-4 sm:py-10">
       <div className="absolute inset-0 bg-ambient opacity-90" />
 
-      <div className="relative grid w-full max-w-7xl gap-6 rounded-[36px] border border-white/70 bg-white/50 p-4 shadow-card backdrop-blur-xl lg:grid-cols-[1.1fr_0.9fr] lg:p-6">
-        <section className="rounded-[30px] bg-[#f8f8fa] p-8 md:p-10">
+      <div className="relative grid w-full max-w-7xl gap-4 rounded-[28px] border border-white/70 bg-white/50 p-3 shadow-card backdrop-blur-xl sm:gap-6 sm:p-4 lg:grid-cols-[1.1fr_0.9fr] lg:rounded-[36px] lg:p-6">
+        <section className="rounded-[24px] bg-[#f8f8fa] p-6 sm:p-8 md:rounded-[30px] md:p-10">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111827] text-sm font-semibold text-white">
               BB
@@ -50,9 +50,9 @@ export function LoginPage() {
             </div>
           </div>
 
-          <div className="mt-12 max-w-xl">
+          <div className="mt-10 max-w-xl sm:mt-12">
             <p className="text-sm text-app-muted">Experiencia refinada</p>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-app-text md:text-5xl">
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-app-text sm:text-4xl md:text-5xl">
               Controla tu operacion diaria con una interfaz limpia, suave y
               precisa.
             </h1>
@@ -62,7 +62,7 @@ export function LoginPage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {metrics.map((item) => (
               <article
                 key={item.label}
@@ -77,8 +77,8 @@ export function LoginPage() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-[30px] border border-white/80 bg-white/80 p-6 backdrop-blur-xl">
-            <div className="flex items-center justify-between">
+          <div className="mt-8 rounded-[24px] border border-white/80 bg-white/80 p-5 backdrop-blur-xl sm:rounded-[30px] sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-app-muted">Estado general</p>
                 <h2 className="mt-1 text-xl font-semibold tracking-tight text-app-text">
@@ -101,7 +101,7 @@ export function LoginPage() {
           </div>
         </section>
 
-        <section className="rounded-[30px] border border-white/70 bg-white p-8 shadow-card md:p-10">
+        <section className="rounded-[24px] border border-white/70 bg-white p-6 shadow-card sm:p-8 md:rounded-[30px] md:p-10">
           <p className="text-sm font-medium text-app-muted">Acceso seguro</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-app-text">
             Inicia sesion

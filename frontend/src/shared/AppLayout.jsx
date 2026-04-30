@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ModuleIcon } from "./ModuleIcon";
 import { modules } from "./modules";
@@ -10,23 +11,70 @@ function getPageTitle(pathname) {
 export function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const pageTitle = getPageTitle(location.pathname);
 
   function handleLogout() {
+    setIsMobileNavOpen(false);
     navigate("/");
   }
 
+  function handleMobileNavToggle() {
+    setIsMobileNavOpen((current) => !current);
+  }
+
+  function handleMobileNavClose() {
+    setIsMobileNavOpen(false);
+  }
+
   return (
-    <div className="h-screen overflow-hidden bg-app-bg text-app-text">
-      <div className="mx-auto flex h-full max-w-[1600px] gap-6 px-4 py-4 lg:px-6">
-        <aside className="hidden h-[calc(100vh-2rem)] w-[276px] shrink-0 flex-col rounded-[32px] border border-white/80 bg-white/78 shadow-card backdrop-blur-xl lg:flex">
+    <div className="min-h-screen bg-app-bg text-app-text">
+      <div className="mx-auto flex min-h-screen max-w-[1600px] gap-4 px-3 py-3 sm:px-4 sm:py-4 lg:h-screen lg:min-h-0 lg:gap-6 lg:px-6">
+        <div
+          className={[
+            "fixed inset-0 z-40 bg-[#111827]/28 backdrop-blur-sm transition duration-200 lg:hidden",
+            isMobileNavOpen
+              ? "pointer-events-auto opacity-100"
+              : "pointer-events-none opacity-0",
+          ].join(" ")}
+          onClick={handleMobileNavClose}
+          aria-hidden="true"
+        />
+
+        <aside
+          className={[
+            "fixed inset-y-3 left-3 z-50 flex w-[min(82vw,320px)] flex-col rounded-[28px] border border-white/80 bg-white/92 shadow-float backdrop-blur-xl transition duration-300 ease-apple lg:static lg:inset-auto lg:z-auto lg:h-[calc(100vh-2rem)] lg:w-[276px] lg:shrink-0 lg:translate-x-0 lg:rounded-[32px] lg:bg-white/78 lg:shadow-card",
+            isMobileNavOpen ? "translate-x-0" : "-translate-x-[120%]",
+          ].join(" ")}
+        >
           <div className="border-b border-app-border/80 px-7 pb-6 pt-6">
-            <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111827] text-sm font-semibold text-white shadow-card">
-              BB
+            <div className="flex items-center justify-between gap-4">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111827] text-sm font-semibold text-white shadow-card">
+                BB
+              </div>
+              <button
+                type="button"
+                onClick={handleMobileNavClose}
+                className="flex h-10 w-10 items-center justify-center rounded-2xl border border-app-border bg-white text-app-muted transition duration-200 ease-apple hover:border-zinc-300 hover:text-app-text lg:hidden"
+                aria-label="Cerrar menu"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.9"
+                >
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
             </div>
             <h1 className="mt-5 text-[28px] font-semibold tracking-tight text-app-text">
               BarbaCode
             </h1>
+            <p className="mt-1 text-sm text-app-muted lg:hidden">
+              Navegacion principal del sistema
+            </p>
           </div>
 
           <nav className="flex-1 space-y-1.5 overflow-y-auto px-5 py-5">
@@ -34,6 +82,7 @@ export function AppLayout() {
               <NavLink
                 key={module.path}
                 to={module.path}
+                onClick={handleMobileNavClose}
                 className={({ isActive }) =>
                   [
                     "group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition-all duration-200 ease-apple",
@@ -72,11 +121,11 @@ export function AppLayout() {
             <button
               type="button"
               onClick={handleLogout}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-app-border bg-white px-4 py-3 text-sm font-medium text-app-text transition-all duration-200 ease-apple hover:border-zinc-300 hover:bg-[#fafafb] hover:shadow-card"
+              className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-app-border bg-white px-4 py-3 text-sm font-medium text-app-text transition-all duration-200 ease-apple hover:border-red-200 hover:bg-red-50/70 hover:text-app-danger hover:shadow-card"
             >
               <svg
                 viewBox="0 0 24 24"
-                className="h-4 w-4 text-app-muted"
+                className="h-4 w-4 text-app-muted transition-colors duration-200 group-hover:text-app-danger"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.9"
@@ -88,18 +137,53 @@ export function AppLayout() {
           </div>
         </aside>
 
-        <div className="flex h-[calc(100vh-2rem)] min-w-0 flex-1 flex-col gap-5 overflow-hidden">
-          <header className="shrink-0 rounded-[30px] border border-white/80 bg-white/72 px-5 py-4 shadow-card backdrop-blur-xl">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 flex-1 flex-col gap-4 lg:h-[calc(100vh-2rem)] lg:gap-5 lg:overflow-hidden">
+          <header className="shrink-0 rounded-[26px] border border-white/80 bg-white/72 px-4 py-4 shadow-card backdrop-blur-xl sm:px-5 lg:rounded-[30px]">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div>
+                <div className="mb-3 flex items-center justify-between gap-3 lg:mb-0">
+                  <button
+                    type="button"
+                    onClick={handleMobileNavToggle}
+                    className="flex h-11 w-11 items-center justify-center rounded-2xl border border-app-border bg-white text-app-text transition duration-200 ease-apple hover:border-zinc-300 hover:bg-[#fafafb] lg:hidden"
+                    aria-label="Abrir menu"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.9"
+                    >
+                      <path d="M4 7h16M4 12h16M4 17h16" />
+                    </svg>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="group inline-flex items-center gap-2 rounded-2xl border border-app-border bg-white px-4 py-2.5 text-sm font-medium text-app-text transition duration-200 ease-apple hover:border-red-200 hover:bg-red-50/70 hover:text-app-danger lg:hidden"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4 text-app-muted transition-colors duration-200 group-hover:text-app-danger"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.9"
+                    >
+                      <path d="M15 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3M10 17l5-5-5-5M15 12H4" />
+                    </svg>
+                    Salir
+                  </button>
+                </div>
                 <p className="text-sm text-app-muted">Buen dia, equipo</p>
-                <h2 className="text-2xl font-semibold tracking-tight text-app-text">
+                <h2 className="text-xl font-semibold tracking-tight text-app-text sm:text-2xl">
                   {pageTitle}
                 </h2>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <label className="flex min-w-[280px] items-center gap-3 rounded-2xl border border-blue-100/70 bg-gradient-to-r from-[#fafafb] to-blue-50/40 px-4 py-3">
+              <div className="flex flex-col gap-3 xl:min-w-[520px] xl:max-w-[720px] xl:flex-1 xl:flex-row xl:items-center xl:justify-end">
+                <label className="flex w-full items-center gap-3 rounded-2xl border border-blue-100/70 bg-gradient-to-r from-[#fafafb] to-blue-50/40 px-4 py-3 xl:max-w-[420px]">
                   <svg
                     viewBox="0 0 24 24"
                     className="h-4 w-4 text-app-muted"
@@ -115,7 +199,7 @@ export function AppLayout() {
                   />
                 </label>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-3 sm:justify-end">
                   <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-app-border bg-white text-app-muted transition-all duration-200 ease-apple hover:border-blue-100 hover:bg-blue-50/40 hover:shadow-card">
                     <svg
                       viewBox="0 0 24 24"
@@ -128,12 +212,14 @@ export function AppLayout() {
                     </svg>
                   </button>
 
-                  <div className="flex items-center gap-3 rounded-2xl border border-app-border bg-white px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.8)]">
-                    <div className="text-right">
+                  <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-app-border bg-white px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+                    <div className="min-w-0 text-right">
                       <p className="text-sm font-medium text-app-text">
                         Admin General
                       </p>
-                      <p className="text-xs text-app-muted">Sucursal matriz</p>
+                      <p className="truncate text-xs text-app-muted">
+                        Sucursal matriz
+                      </p>
                     </div>
                     <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111827] text-sm font-semibold text-white">
                       AG
@@ -142,10 +228,32 @@ export function AppLayout() {
                 </div>
               </div>
             </div>
+
+            <div className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:hidden">
+              {modules.map((module) => {
+                const isActive = location.pathname === module.path;
+
+                return (
+                  <NavLink
+                    key={module.path}
+                    to={module.path}
+                    className={[
+                      "flex shrink-0 items-center gap-2 rounded-2xl border px-3 py-2 text-sm font-medium transition duration-200 ease-apple",
+                      isActive
+                        ? "border-blue-100 bg-blue-50 text-app-accent shadow-card"
+                        : "border-white/70 bg-white/85 text-app-muted",
+                    ].join(" ")}
+                  >
+                    <ModuleIcon name={module.icon} className="h-4 w-4" />
+                    {module.label}
+                  </NavLink>
+                );
+              })}
+            </div>
           </header>
 
-          <main className="min-h-0 flex-1 overflow-y-auto pr-1">
-            <div className="rounded-[34px] border border-white/80 bg-white/58 p-4 shadow-card backdrop-blur-xl md:p-6">
+          <main className="min-h-0 flex-1 lg:overflow-y-auto lg:pr-1">
+            <div className="rounded-[28px] border border-white/80 bg-white/58 p-4 shadow-card backdrop-blur-xl sm:p-5 md:p-6 lg:rounded-[34px]">
               <Outlet />
             </div>
           </main>
