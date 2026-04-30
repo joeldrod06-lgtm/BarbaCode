@@ -2,9 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color: #1d1d1f;
-  background-color: #f5f5f7;
+:root,
+.theme-light {
+  --app-bg: 245 245 247;
+  --app-surface: 255 255 255;
+  --app-surface-soft: 250 250 251;
+  --app-surface-strong: 255 255 255;
+  --app-text: 29 29 31;
+  --app-muted: 107 114 128;
+  --app-border: 229 231 235;
+  --app-accent: 37 99 235;
+  --app-accent-soft: 239 246 255;
+  --app-success: 5 150 105;
+  --app-warning: 217 119 6;
+  --app-danger: 220 38 38;
+  --app-contrast: 17 24 39;
+  --app-contrast-text: 255 255 255;
+  --app-ambient:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.06), transparent 30%);
+  --shadow-card: 0 16px 40px rgba(15, 23, 42, 0.08);
+  --shadow-float: 0 20px 48px rgba(15, 23, 42, 0.14);
+  --shadow-soft: 0 12px 32px rgba(15, 23, 42, 0.08);
+  color: rgb(var(--app-text));
+  background-color: rgb(var(--app-bg));
+  color-scheme: light;
   font-family:
     Inter,
     "SF Pro Display",
@@ -19,14 +41,51 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html[data-theme="dark"],
+body[data-theme="dark"],
+.theme-dark {
+  --app-bg: 8 13 23;
+  --app-surface: 15 23 36;
+  --app-surface-soft: 20 30 46;
+  --app-surface-strong: 24 35 54;
+  --app-text: 236 240 248;
+  --app-muted: 148 163 184;
+  --app-border: 51 65 85;
+  --app-accent: 96 165 250;
+  --app-accent-soft: 30 41 59;
+  --app-success: 52 211 153;
+  --app-warning: 251 191 36;
+  --app-danger: 248 113 113;
+  --app-contrast: 30 41 59;
+  --app-contrast-text: 241 245 249;
+  --app-ambient:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.7), transparent 34%),
+    linear-gradient(180deg, rgba(8, 13, 23, 0.92), rgba(8, 13, 23, 0.98));
+  --shadow-card: 0 18px 40px rgba(2, 6, 23, 0.38);
+  --shadow-float: 0 24px 56px rgba(2, 6, 23, 0.5);
+  --shadow-soft: 0 14px 34px rgba(2, 6, 23, 0.34);
+  color-scheme: dark;
+}
+
+html {
+  background-color: rgb(var(--app-bg));
+  transition:
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.07), transparent 26%),
-    radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.05), transparent 28%),
-    #f5f5f7;
+  color: rgb(var(--app-text));
+  background: var(--app-ambient), rgb(var(--app-bg));
+  transition:
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-image 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 #root {
@@ -35,6 +94,22 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+#root,
+#root *,
+#root *::before,
+#root *::after {
+  transition-property:
+    background-color,
+    border-color,
+    color,
+    fill,
+    stroke,
+    box-shadow,
+    opacity;
+  transition-duration: 280ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 ::selection {

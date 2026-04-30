@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ModuleIcon } from "./ModuleIcon";
+import { ThemeToggle } from "./ThemeToggle";
 import { modules } from "./modules";
+import { useTheme } from "./useTheme";
 
 function getPageTitle(pathname) {
   const current = modules.find((module) => module.path === pathname);
@@ -12,6 +14,7 @@ export function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
   const pageTitle = getPageTitle(location.pathname);
 
   function handleLogout() {
@@ -28,11 +31,16 @@ export function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-app-bg text-app-text">
+    <div
+      className={[
+        "min-h-screen bg-app-bg text-app-text",
+        isDark ? "theme-dark" : "theme-light",
+      ].join(" ")}
+    >
       <div className="mx-auto flex min-h-screen max-w-[1600px] gap-4 px-3 py-3 sm:px-4 sm:py-4 lg:h-screen lg:min-h-0 lg:gap-6 lg:px-6">
         <div
           className={[
-            "fixed inset-0 z-40 bg-[#111827]/28 backdrop-blur-sm transition duration-200 lg:hidden",
+            "fixed inset-0 z-40 bg-app-contrast/40 backdrop-blur-sm transition duration-200 lg:hidden",
             isMobileNavOpen
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0",
@@ -43,19 +51,19 @@ export function AppLayout() {
 
         <aside
           className={[
-            "fixed inset-y-3 left-3 z-50 flex w-[min(82vw,320px)] flex-col rounded-[28px] border border-white/80 bg-white/92 shadow-float backdrop-blur-xl transition duration-300 ease-apple lg:static lg:inset-auto lg:z-auto lg:h-[calc(100vh-2rem)] lg:w-[276px] lg:shrink-0 lg:translate-x-0 lg:rounded-[32px] lg:bg-white/78 lg:shadow-card",
+            "fixed inset-y-3 left-3 z-50 flex w-[min(82vw,320px)] flex-col rounded-[28px] border border-app-border/80 bg-app-surface/92 shadow-float backdrop-blur-xl transition duration-300 ease-apple lg:static lg:inset-auto lg:z-auto lg:h-[calc(100vh-2rem)] lg:w-[276px] lg:shrink-0 lg:translate-x-0 lg:rounded-[32px] lg:bg-app-surface/78 lg:shadow-card",
             isMobileNavOpen ? "translate-x-0" : "-translate-x-[120%]",
           ].join(" ")}
         >
           <div className="border-b border-app-border/80 px-7 pb-6 pt-6">
             <div className="flex items-center justify-between gap-4">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111827] text-sm font-semibold text-white shadow-card">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-app-contrast text-sm font-semibold text-app-contrast-text shadow-card">
                 BB
               </div>
               <button
                 type="button"
                 onClick={handleMobileNavClose}
-                className="flex h-10 w-10 items-center justify-center rounded-2xl border border-app-border bg-white text-app-muted transition duration-200 ease-apple hover:border-zinc-300 hover:text-app-text lg:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl border border-app-border bg-app-surface text-app-muted transition duration-200 ease-apple hover:border-app-accent/20 hover:text-app-text lg:hidden"
                 aria-label="Cerrar menu"
               >
                 <svg
@@ -87,8 +95,8 @@ export function AppLayout() {
                   [
                     "group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition-all duration-200 ease-apple",
                     isActive
-                      ? "border border-blue-100/80 bg-gradient-to-br from-white to-blue-50/70 text-app-text shadow-card"
-                      : "text-app-muted hover:bg-white hover:text-app-text",
+                      ? "border border-app-accent/20 bg-gradient-to-br from-app-surface to-app-accent-soft/70 text-app-text shadow-card"
+                      : "text-app-muted hover:bg-app-surface hover:text-app-text",
                   ].join(" ")
                 }
               >
@@ -98,8 +106,8 @@ export function AppLayout() {
                       className={[
                         "flex h-10 w-10 items-center justify-center rounded-2xl border transition-all duration-200 ease-apple",
                         isActive
-                          ? "border-blue-100 bg-blue-50 text-app-accent"
-                          : "border-app-border bg-[#fafafb] text-app-muted group-hover:border-blue-100/80 group-hover:bg-blue-50/40 group-hover:text-app-text",
+                          ? "border-app-accent/20 bg-app-accent-soft text-app-accent"
+                          : "border-app-border bg-app-surface-soft text-app-muted group-hover:border-app-accent/20 group-hover:bg-app-accent-soft/60 group-hover:text-app-text",
                       ].join(" ")}
                     >
                       <ModuleIcon
@@ -117,11 +125,17 @@ export function AppLayout() {
             ))}
           </nav>
 
-          <div className="border-t border-app-border/80 px-5 py-5">
+          <div className="space-y-3 border-t border-app-border/80 px-5 py-5">
+            <ThemeToggle
+              isDark={isDark}
+              onToggle={toggleTheme}
+              variant="switch"
+            />
+
             <button
               type="button"
               onClick={handleLogout}
-              className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-app-border bg-white px-4 py-3 text-sm font-medium text-app-text transition-all duration-200 ease-apple hover:border-red-200 hover:bg-red-50/70 hover:text-app-danger hover:shadow-card"
+              className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-app-border bg-app-surface px-4 py-3 text-sm font-medium text-app-text transition-all duration-200 ease-apple hover:border-app-danger/30 hover:bg-app-danger/10 hover:text-app-danger hover:shadow-card"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -138,14 +152,14 @@ export function AppLayout() {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4 lg:h-[calc(100vh-2rem)] lg:gap-5 lg:overflow-hidden">
-          <header className="shrink-0 rounded-[26px] border border-white/80 bg-white/72 px-4 py-4 shadow-card backdrop-blur-xl sm:px-5 lg:rounded-[30px]">
+          <header className="shrink-0 rounded-[26px] border border-app-border/80 bg-app-surface/72 px-4 py-4 shadow-card backdrop-blur-xl sm:px-5 lg:rounded-[30px]">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div>
                 <div className="mb-3 flex items-center justify-between gap-3 lg:mb-0">
                   <button
                     type="button"
                     onClick={handleMobileNavToggle}
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl border border-app-border bg-white text-app-text transition duration-200 ease-apple hover:border-zinc-300 hover:bg-[#fafafb] lg:hidden"
+                    className="flex h-11 w-11 items-center justify-center rounded-2xl border border-app-border bg-app-surface text-app-text transition duration-200 ease-apple hover:border-app-accent/20 hover:bg-app-surface-soft lg:hidden"
                     aria-label="Abrir menu"
                   >
                     <svg
@@ -162,7 +176,7 @@ export function AppLayout() {
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="group inline-flex items-center gap-2 rounded-2xl border border-app-border bg-white px-4 py-2.5 text-sm font-medium text-app-text transition duration-200 ease-apple hover:border-red-200 hover:bg-red-50/70 hover:text-app-danger lg:hidden"
+                    className="group inline-flex items-center gap-2 rounded-2xl border border-app-border bg-app-surface px-4 py-2.5 text-sm font-medium text-app-text transition duration-200 ease-apple hover:border-app-danger/30 hover:bg-app-danger/10 hover:text-app-danger lg:hidden"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -183,7 +197,7 @@ export function AppLayout() {
               </div>
 
               <div className="flex flex-col gap-3 xl:min-w-[520px] xl:max-w-[720px] xl:flex-1 xl:flex-row xl:items-center xl:justify-end">
-                <label className="flex w-full items-center gap-3 rounded-2xl border border-blue-100/70 bg-gradient-to-r from-[#fafafb] to-blue-50/40 px-4 py-3 xl:max-w-[420px]">
+                <label className="flex w-full items-center gap-3 rounded-2xl border border-app-accent/15 bg-gradient-to-r from-app-surface-soft to-app-accent-soft/40 px-4 py-3 xl:max-w-[420px]">
                   <svg
                     viewBox="0 0 24 24"
                     className="h-4 w-4 text-app-muted"
@@ -200,7 +214,7 @@ export function AppLayout() {
                 </label>
 
                 <div className="flex items-center justify-between gap-3 sm:justify-end">
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-app-border bg-white text-app-muted transition-all duration-200 ease-apple hover:border-blue-100 hover:bg-blue-50/40 hover:shadow-card">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-app-border bg-app-surface text-app-muted transition-all duration-200 ease-apple hover:border-app-accent/20 hover:bg-app-accent-soft/45 hover:shadow-card">
                     <svg
                       viewBox="0 0 24 24"
                       className="h-5 w-5"
@@ -212,7 +226,7 @@ export function AppLayout() {
                     </svg>
                   </button>
 
-                  <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-app-border bg-white px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+                  <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-app-border bg-app-surface px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.08)]">
                     <div className="min-w-0 text-right">
                       <p className="text-sm font-medium text-app-text">
                         Admin General
@@ -221,7 +235,7 @@ export function AppLayout() {
                         Sucursal matriz
                       </p>
                     </div>
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111827] text-sm font-semibold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-app-contrast text-sm font-semibold text-app-contrast-text">
                       AG
                     </div>
                   </div>
@@ -240,8 +254,8 @@ export function AppLayout() {
                     className={[
                       "flex shrink-0 items-center gap-2 rounded-2xl border px-3 py-2 text-sm font-medium transition duration-200 ease-apple",
                       isActive
-                        ? "border-blue-100 bg-blue-50 text-app-accent shadow-card"
-                        : "border-white/70 bg-white/85 text-app-muted",
+                        ? "border-app-accent/20 bg-app-accent-soft text-app-accent shadow-card"
+                        : "border-app-border/70 bg-app-surface/85 text-app-muted",
                     ].join(" ")}
                   >
                     <ModuleIcon name={module.icon} className="h-4 w-4" />
@@ -253,7 +267,7 @@ export function AppLayout() {
           </header>
 
           <main className="min-h-0 flex-1 lg:overflow-y-auto lg:pr-1">
-            <div className="rounded-[28px] border border-white/80 bg-white/58 p-4 shadow-card backdrop-blur-xl sm:p-5 md:p-6 lg:rounded-[34px]">
+            <div className="rounded-[28px] border border-app-border/80 bg-app-surface/58 p-4 shadow-card backdrop-blur-xl sm:p-5 md:p-6 lg:rounded-[34px]">
               <Outlet />
             </div>
           </main>
